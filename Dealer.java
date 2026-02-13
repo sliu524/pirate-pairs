@@ -1,5 +1,6 @@
 public class Dealer {
         private int [] deck = new int[55];
+        private int [] check = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         public Dealer(){
             createdeck();
         }
@@ -23,18 +24,24 @@ public class Dealer {
                 deck[index2] = temp;
             }
         }
-        public int dealcard(){
-            return deck[0];
-        }
-        public void deal(){
-            int [] newdeck = new int[deck.length-1];
-            for (int i = 1; i < deck.length; i ++){
-                newdeck[i-1] = deck[i];
+        public int deal(){
+            int [] newdeck = new int [deck.length-1];
+            int card = deck[deck.length-1];
+            for (int i = 0; i < deck.length-1; i ++){
+                newdeck [i] = deck [i];
             }
             deck = newdeck;
+            if (check[card-1] > 0){
+                check[card-1] -= 1;
+                return card;
+            }
+            return -1;
         }
         public int[] showdeck(){
             return deck;
+        }
+        public int[] showcheck(){
+            return check;
         }
     }
     
