@@ -5,6 +5,7 @@ public class PiratePairs {
         Player [] players = new Player[playernum];
         Dealer dealer = new Dealer();
         boolean gameover = false;
+        int losescore = (int)60/playernum + 1;
         for (int i = 0; i < playernum; i++){
             players [i] = new Player();
         }
@@ -12,11 +13,11 @@ public class PiratePairs {
             for (int j = 0; j < playernum; j++){
                 int hand = dealer.deal();
                 players[j].newhand(hand);
-                if (!(players[j].check(hand))){
-                    return
+                System.out.println("Player"+j+Arrays.toString(players[j].gethand()));
+                if (players[j].getifloseround()){
+                   players[j].resethand(); 
                 }
-                if (hand == -1){
-                    return;
+
                 }
             }
         }
