@@ -1,5 +1,7 @@
+import java.util.Arrays;
+
 public class Dealer {
-        private int [] deck = new int[55];
+        public int [] deck = new int[55];
         private int [] check = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         public Dealer(){
             createdeck();
@@ -13,15 +15,14 @@ public class Dealer {
                 }
             }
             //Shuffle
-            for (int i = 0; i < (int)(Math.random()*45+10); i++){
-                int index1 = (int)(Math.random()*deck.length);
-                int index2 = (int)(Math.random()*deck.length);
-                while (index2 == index1){
-                    index2 = (int)(Math.random()*deck.length);
+            for (int i = deck.length-1; i > 0; i--){
+                int index = (int)(Math.random()*deck.length);
+                while (i == index){
+                    index = (int)(Math.random()*deck.length);
                 }
-                int temp = deck[index1];
-                deck[index1] = deck[index2];
-                deck[index2] = temp;
+                int temp = deck[i];
+                deck[i] = deck[index];
+                deck[index] = temp;
             }
         }
         public int deal(){
@@ -37,11 +38,13 @@ public class Dealer {
             }
             return -1;
         }
-        public int[] showdeck(){
-            return deck;
+        public String showdeck(){
+            String d = Arrays.toString(deck);
+            return d;
         }
-        public int[] showcheck(){
-            return check;
+        public String showcheck(){
+            String c = Arrays.toString(check);
+            return c;
         }
     }
     

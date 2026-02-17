@@ -4,22 +4,39 @@ public class PiratePairs {
         int playernum = 4;
         Player [] players = new Player[playernum];
         Dealer dealer = new Dealer();
-        boolean gameover = false;
         int losescore = (int)60/playernum + 1;
+        int[] mincard = new int[playernum];
+        int round = 1;
         for (int i = 0; i < playernum; i++){
-            players [i] = new Player();
+            players [i] = new Player(i+1);
         }
-        while (!gameover){
+        
+        while ((dealer.deck.length >= playernum)&&(players.length > 1)){
+            System.out.println("Round"+round);
+            System.out.println("deck:"+dealer.showdeck());
             for (int j = 0; j < playernum; j++){
                 int hand = dealer.deal();
                 players[j].newhand(hand);
-                System.out.println("Player"+j+Arrays.toString(players[j].gethand()));
                 if (players[j].getifloseround()){
                    players[j].resethand(); 
                 }
-
+                System.out.println("Player"+players[j].playername+Arrays.toString(players[j].gethand())+" Score:" + players[j].getscore());
+                mincard[j] = players[j].getlowhand();
+            }
+            for (int j = playernum-1; j >= 0; j--){
+                if (players[j].getscore()>losescore){
+                    playernum --;
+                    Player[] tempplayers = new Player[playernum];
+                    for (int i = 0; i < j; i ++){
+                        tempplayers[i] = players[i];
+                    }
+                    for (int i = j+1; i < players.length; i ++){
+                        tempplayers[i-1] = players[i];
+                    }
+                    players = tempplayers;  
                 }
             }
+            round ++;
         }
     }
 }
