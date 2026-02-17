@@ -23,6 +23,7 @@ public class PiratePairs {
                 System.out.println("Player"+players[j].playername+Arrays.toString(players[j].gethand())+" Score:" + players[j].getscore());
                 mincard[j] = players[j].getlowhand();
             }
+            //remove player
             for (int j = playernum-1; j >= 0; j--){
                 if (players[j].getscore()>losescore){
                     playernum --;
@@ -37,6 +38,11 @@ public class PiratePairs {
                 }
             }
             round ++;
+        }
+        if (players.length==1){
+            System.out.println("Player"+players[0].playername+" is the winner!");
+        }else {
+            System.out.println("Game over. No one wins.");
         }
     }
 }
