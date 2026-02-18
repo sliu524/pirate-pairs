@@ -1,12 +1,13 @@
 import java.util.Arrays;
 public class PiratePairs {
     public static void main(String[] args){
-        int playernum = 4;
+        int playernum = 4; //minimum of 4 players
         Player [] players = new Player[playernum];
         Dealer dealer = new Dealer();
         int losescore = (int)60/playernum + 1;
         int[] mincardarray = new int[playernum];
         int round = 1;
+        //find lowest hand in all hands
         for (int i = 0; i < playernum; i++){
             players [i] = new Player(i+1);
             System.out.println("Player" + players[i].playername + " has strategy " + players[i].strat);
@@ -25,34 +26,51 @@ public class PiratePairs {
                     }
                 }
                 System.out.println("Dealer pulls out a new card. Player choosese whether to accept. The lowest hand currently is: " + mincard);
-                if ((ifdraw(players[j].strat, players[j].gethand(), dealer))||(players[j].gethand().length==0)){
+                //player draws card
+                if ((ifDraw(dealer, players[j],mincard, losescore))||(players[j].getHand().length==0)){
+                    //success
                     System.out.println("Player" + players[j].playername + " says yes to a new card.");
                     int hand = dealer.deal();
-                    players[j].newhand(hand);
-                    if (players[j].getifloseround()){
-                        players[j].resethand(); 
+                    players[j].newHand(hand);
+                    mincardarray[j] = players[j].getLowHand();
+                    //player fails
+                    if (players[j].getIfLoseRound()){
+                        dealer.addToDiscard(players[j].getHand());
+                        players[j].resetHand();
+                        mincardarray[j] = players[j].getLowHand();
                     }
                 }
+                //player take lowest hand as score
                 else{
                     System.out.println("Player" + players[j].playername + " says no to a new card.");
                     players[j].addscore(mincard);
-                    players[mincardindex].poplowcard();
+                    dealer.addToDiscard(players[j].getHand());
+                    players[j].resetHand();
+                    mincardarray[j] = players[j].getLowHand();
+                    dealer.addToDiscard(players[mincardindex].getLowHand());
+                    players[mincardindex].popLowCard();
+                    players[mincardindex].resetminvalue();
+                    mincardarray[mincardindex] = players[mincardindex].getLowHand();
                 }
-                System.out.println("Player"+players[j].playername+Arrays.toString(players[j].gethand())+" Score:" + players[j].getscore());
-                mincardarray[j] = players[j].getlowhand();
+                System.out.println("Player"+players[j].playername + Arrays.toString(players[j].getHand())+" Score:" + players[j].getscore());
+                mincardarray[j] = players[j].getLowHand();
             }
             //remove player
             for (int j = playernum-1; j >= 0; j--){
                 if (players[j].getscore()>losescore){
                     playernum --;
                     Player[] tempplayers = new Player[playernum];
-                    for (int i = 0; i < j; i ++){
-                        tempplayers[i] = players[i];
-                    }
-                    for (int i = j+1; i < players.length; i ++){
-                        tempplayers[i-1] = players[i];
+                    int [] tempMin = new int[playernum];
+                    int index = 0;
+                    for (int i = 0; i < players.length; i ++){
+                        if (i != j){
+                            tempplayers[index] = players[i];
+                            tempMin[index] = mincardarray[i];
+                            index++;
+                        }
                     }
                     players = tempplayers;  
+                    mincardarray = tempMin;
                 }
             }
             round ++;
@@ -64,15 +82,37 @@ public class PiratePairs {
             System.out.println("Game over. No one wins.");
         }
     }
-    public static boolean ifdraw(String strat, int[] h, Dealer d){
-        if (strat == "radical"){
+    //Determine action of player based on assigned strategies
+    public static boolean ifDraw(Dealer d, Player p, int mincard, int l){
+        String strat = p.strat;
+        int[] h = p.getHand();
+        if (strat.equals("radical")){
             return true;
-        }else if (strat == "coward"){
+        }else if (strat.equals("coward")){
             return false;
-        }else{
-            int[]c = d.check;
+        }else if (strat.equals("chancetimer")){
+            if (p.getHand().length < 5){
+                return true;
+            }
+            return false;
+        }
+        /*Activate new strategies
+        else if (strat.equals("hopper")){
+            if ((p.getHand().length % 2)==0){
+                return true;
+            }
+            return false;
+        }
+        else if (strat.equals("randomer")){
+            int n = (int)(Math.random()*2)
+            if (n==0){
+                return true;
+            }
+            return false;
+        }*/
+        else{
             for (int i = 0; i < h.length; i ++){
-                if (c[h[i]-1] > (int)h[i]/2){
+                if ((d.checkdiscard[h[i]-1]+d.checkHand[h[i]-1] > h[i]/2)||((p.getscore()+mincard)>l)){
                     return false;
                 }
             }

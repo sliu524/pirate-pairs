@@ -8,18 +8,30 @@ public class Player {
     public Player(int i){
         hand = new int[0];
         playername = i;
-        int snum = (int)(Math.random()*3)+1;
+        int stratnum = 4;
+        int snum = (int)(Math.random()*stratnum)+1;
         if (snum == 1){
             strat = "radical";
         }
         else if (snum == 2){
             strat = "coward";
         }
-        else {
-            strat = "thinker";
+        else if (snum == 3){
+            strat = "chancetimer";
+        }
+        /**activate new strategies by changing stratnum and uncomment these;
+        else if (snum == 4){
+            strat = "hopper";
+        }
+        else if (snum == 5){
+            strat = "randomer"
+        }
+        **/
+        else{
+            strat = "thinker"; 
         }
     }
-    public void newhand(int card){
+    public void newHand(int card){
         ifloseround = false;
         int[]newhand = new int[hand.length+1];
         if (card<lowhand){
@@ -33,12 +45,14 @@ public class Player {
                 break;
             }
         }
-        newhand[newhand.length-1] = card;
-        this.hand = newhand;
+        if (!ifloseround){
+            newhand[newhand.length-1] = card;
+            this.hand = newhand;
+        }
     }
-    public void poplowcard(){
+    public void popLowCard(){
         if (hand.length<=1){
-            resethand();
+            resetHand();
         }
         else{
             int[] newhand = new int[hand.length-1];
@@ -52,17 +66,26 @@ public class Player {
             hand = newhand;
         }
     }
-    public void resethand(){
+    public void resetminvalue(){
+        int min = Integer.MAX_VALUE;
+        for(int i = 0; i < hand.length; i++){
+            if (hand[i]<min){
+                min = hand[i];
+            }
+        }
+        lowhand = min;
+    }
+    public void resetHand(){
         hand = new int[0];
         lowhand = Integer.MAX_VALUE;
     }
-    public int getlowhand(){
+    public int getLowHand(){
         return lowhand;
     }
-    public boolean getifloseround(){
+    public boolean getIfLoseRound(){
         return ifloseround;
     }
-    public int[] gethand(){
+    public int[] getHand(){
         return hand;
     }
     public int getscore(){
