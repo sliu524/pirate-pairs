@@ -5,7 +5,7 @@ public class PiratePairs {
         Player [] players = new Player[playernum];
         Dealer dealer = new Dealer();
         int losescore = (int)60/playernum + 1;
-        int[] mincardarray = new int[playernum];
+        int[] minCardArray = new int[playernum];
         int round = 1;
         //find lowest hand in all hands
         for (int i = 0; i < playernum; i++){
@@ -18,11 +18,11 @@ public class PiratePairs {
             System.out.println("deck:"+dealer.showdeck());
             for (int j = 0; j < playernum; j++){
                 int mincard = Integer.MAX_VALUE;
-                int mincardindex = 0;
-                for (int i = 0; i < mincardarray.length; i ++){
-                    if ((mincardarray[i]<mincard)&&(i != j)){
-                        mincard = mincardarray[i];
-                        mincardindex = i;
+                int minCardIndex = 0;
+                for (int i = 0; i < minCardArray.length; i ++){
+                    if ((minCardArray[i]<mincard)&&(i != j)){
+                        mincard = minCardArray[i];
+                        minCardIndex = i;
                     }
                 }
                 System.out.println("Dealer pulls out a new card. Player choosese whether to accept. The lowest hand currently is: " + mincard);
@@ -32,12 +32,12 @@ public class PiratePairs {
                     System.out.println("Player" + players[j].playername + " says yes to a new card.");
                     int hand = dealer.deal();
                     players[j].newHand(hand);
-                    mincardarray[j] = players[j].getLowHand();
+                    minCardArray[j] = players[j].getLowHand();
                     //player fails
                     if (players[j].getIfLoseRound()){
                         dealer.addToDiscard(players[j].getHand());
                         players[j].resetHand();
-                        mincardarray[j] = players[j].getLowHand();
+                        minCardArray[j] = players[j].getLowHand();
                     }
                 }
                 //player take lowest hand as score
@@ -46,14 +46,14 @@ public class PiratePairs {
                     players[j].addscore(mincard);
                     dealer.addToDiscard(players[j].getHand());
                     players[j].resetHand();
-                    mincardarray[j] = players[j].getLowHand();
-                    dealer.addToDiscard(players[mincardindex].getLowHand());
-                    players[mincardindex].popLowCard();
-                    players[mincardindex].resetminvalue();
-                    mincardarray[mincardindex] = players[mincardindex].getLowHand();
+                    minCardArray[j] = players[j].getLowHand();
+                    dealer.addToDiscard(players[minCardIndex].getLowHand());
+                    players[minCardIndex].popLowCard();
+                    players[minCardIndex].resetminvalue();
+                    minCardArray[minCardIndex] = players[minCardIndex].getLowHand();
                 }
                 System.out.println("Player"+players[j].playername + Arrays.toString(players[j].getHand())+" Score:" + players[j].getscore());
-                mincardarray[j] = players[j].getLowHand();
+                minCardArray[j] = players[j].getLowHand();
             }
             //remove player
             for (int j = playernum-1; j >= 0; j--){
@@ -65,12 +65,12 @@ public class PiratePairs {
                     for (int i = 0; i < players.length; i ++){
                         if (i != j){
                             tempplayers[index] = players[i];
-                            tempMin[index] = mincardarray[i];
+                            tempMin[index] = minCardArray[i];
                             index++;
                         }
                     }
                     players = tempplayers;  
-                    mincardarray = tempMin;
+                    minCardArray = tempMin;
                 }
             }
             round ++;
